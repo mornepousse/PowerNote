@@ -5,6 +5,27 @@
     <TargetFramework>net6.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
+    <ApplicationIcon>Resources\icon256.ico</ApplicationIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Resources\icon24.png" />
+    <None Remove="Resources\icon256.ico" />
+    <None Remove="Resources\icon256.png" />
+    <None Remove="Resources\icon512.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Resources\icon256.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\icon24.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\icon256.ico" />
+    <Resource Include="Resources\icon256.png" />
+    <Resource Include="Resources\icon512.png" />
+  </ItemGroup>
 
 </Project>
