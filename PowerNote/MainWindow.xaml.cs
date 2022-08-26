@@ -37,9 +37,9 @@ namespace PowerNote
 
 		public string Txt
 		{
-			get => txt; set
+			get => MainTextBox.Text; set
 			{
-				txt = value;
+				MainTextBox.Text = value;
 				OnPropertyChanged();
 			}
 		}
@@ -276,5 +276,6 @@ namespace PowerNote
 			FilePath = "";
 			Txt = "";
 		}
+
 	}
 }

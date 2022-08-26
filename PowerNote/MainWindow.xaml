@@ -2,6 +2,7 @@
     x:Class="PowerNote.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:PowerNote"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -27,15 +28,18 @@
                 <Button
                     x:Name="OpenButton"
                     Margin="2,0"
-                    Content="Open" Click="OpenButton_Click" />
+                    Click="OpenButton_Click"
+                    Content="Open" />
                 <Button
                     x:Name="SaveButton"
                     Margin="2,0"
-                    Content="Save" Click="SaveButton_Click" />
+                    Click="SaveButton_Click"
+                    Content="Save" />
                 <Button
                     x:Name="NewButton"
                     Margin="2,0"
-                    Content="New" Click="NewButton_Click"/>
+                    Click="NewButton_Click"
+                    Content="New" />
                 <Button
                     x:Name="RecalcAllButton"
                     Click="RecalcAllButton_Click"
@@ -49,13 +53,15 @@
                 Content="Topmost"
                 IsChecked="{Binding ElementName=Main, Path=Topmost, UpdateSourceTrigger=PropertyChanged}" />
         </Grid>
-        <TextBox
+        <avalonEdit:TextEditor
             x:Name="MainTextBox"
             Grid.Row="1"
-            AcceptsReturn="True"
-            AcceptsTab="True"
-            Text="{Binding ElementName=Main, Path=Txt, UpdateSourceTrigger=PropertyChanged}"
-            TextWrapping="Wrap" />
+            FontFamily="Consolas"
+            FontSize="10pt"
+            HorizontalScrollBarVisibility="Auto"
+            SyntaxHighlighting="C#"
+            VerticalScrollBarVisibility="Auto" />
+
 
     </Grid>
 </Window>
