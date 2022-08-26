@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PowerNote.Managers;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -20,29 +21,27 @@ using System.Windows.Shapes;
 namespace PowerNote
 {
 	/// <summary>
-	/// Interaction logic for MainWindow.xaml
+	/// Interaction logic for NoteWindow.xaml
 	/// </summary>
-	public partial class MainWindow : Window, INotifyPropertyChanged
+	public partial class NoteWindow : Window, INotifyPropertyChanged
 	{
 		#region event
 		public event PropertyChangedEventHandler PropertyChanged;
 		protected void OnPropertyChanged([CallerMemberName] string name = "") => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 		#endregion event
 
-		private string filePath = string.Empty;
+		#region Variables
 
-		private string txt = "";
+		//private string filePath = string.Empty;
 		private char[] spacerChars = new char[] { ' ', '\r', '\n', '\a', '\f', '\t', '\v' };
 		private Dictionary<string, double> vars = new Dictionary<string, double>();
+		private Project noteProject;
+		private int indexToSave = 0;
 
-		public string Txt
-		{
-			get => MainTextBox.Text; set
-			{
-				MainTextBox.Text = value;
-				OnPropertyChanged();
-			}
-		}
+		#endregion Variables
+
+		#region Properties
+
 
 		public Dictionary<string, double> Vars
 		{
@@ -55,9 +54,12 @@ namespace PowerNote
 
 		public string FilePath
 		{
-			get => filePath; set
+			get => NoteProject.Type == ProjectType.File ? NoteProject.Content : string.Empty;
+			set
 			{
-				filePath = value;
+				if (NoteProject.Type == ProjectType.File)
+					NoteProject.Content = value;
+
 				OnPropertyChanged();
 				OnPropertyChanged(nameof(TitleProject));
 			}
@@ -68,8 +70,35 @@ namespace PowerNote
 			get =>FilePath.Length == 0 ? "PowerNote" : string.Format("PowerNote - {0} - {1}",new FileInfo(FilePath).Name , FilePath);
 			set => OnPropertyChanged();
 		}
+		public Project NoteProject
+		{
+			get => noteProject; set
+			{
+				noteProject = value;
+				OnPropertyChanged();
+			}
+		}
 
-		public MainWindow()
+		#endregion Properties
+
+		public NoteWindow(Project project)
+		{
+			NoteProject = project;
+			InitializeComponent();
+			if (project.Type == ProjectType.File && File.Exists(project.Content))
+			{
+				try
+				{
+					MainTextEditor.Text = File.ReadAllText(project.Content);
+				}
+				catch 
+				{
+					MessageBox.Show("Oups");
+				}
+			}
+			else MainTextEditor.Text = project.Content;
+		}
+		public NoteWindow()
 		{
 			InitializeComponent();
 		}
@@ -80,14 +109,14 @@ namespace PowerNote
 			{
 				GetVars();
 
-				int cursorPosition = MainTextBox.SelectionStart;
-				int selectionLength = MainTextBox.SelectionLength;
-				if (cursorPosition == -1 || string.IsNullOrWhiteSpace(Txt))
+				int cursorPosition = MainTextEditor.SelectionStart;
+				int selectionLength = MainTextEditor.SelectionLength;
+				if (cursorPosition == -1 || string.IsNullOrWhiteSpace(MainTextEditor.Text))
 					return;
 
 				
 
-				string textTmp = GetCalcul(Txt, cursorPosition);
+				string textTmp = GetCalcul(MainTextEditor.Text, cursorPosition);
 
 				if (string.IsNullOrWhiteSpace(textTmp)) return;
 
@@ -98,7 +127,7 @@ namespace PowerNote
 				{
 					object? result = new DataTable().Compute(textTmp.Replace(',', '.'), null);
 
-					Txt = Txt.Insert(cursorPosition, "=" + result);
+					MainTextEditor.Text = MainTextEditor.Text.Insert(cursorPosition, "=" + result);
 				}
 				catch { }
 
@@ -115,9 +144,9 @@ namespace PowerNote
 			bool isVar = false;
 			List<int> vsStart = new List<int>();
 			List<int> vslength = new List<int>();
-			for (int i = 0; i < Txt.Length; i++)
+			for (int i = 0; i < MainTextEditor.Text.Length; i++)
 			{
-				char c = Txt[i];
+				char c = MainTextEditor.Text[i];
 
 				if (c == '$' && !isVar)
 					isVar = true;
@@ -139,7 +168,7 @@ namespace PowerNote
 			}
 
 			int rmLength = 0; // diff length old to new
-			string tmpTxt = Txt;
+			string tmpTxt = MainTextEditor.Text;
 			for (int i = 0; i < vsStart.Count; i++)
 			{
 				int s = vsStart[i];
@@ -168,7 +197,7 @@ namespace PowerNote
 				tmpTxt = pref + result + suf;
 				rmLength = (l - result.Length) >= 0 ? (l - result.Length) : (result.Length - l);
 			}
-			Txt = tmpTxt;
+			MainTextEditor.Text = tmpTxt;
 		}
 
 		private string ReplaceVars(List<string> varListTmp, string textTmp)
@@ -218,8 +247,8 @@ namespace PowerNote
 
 		private void GetVars()
 		{
-			if (string.IsNullOrWhiteSpace(Txt)) return;
-			string[]? varlist = Txt.Replace('\r',' ').Replace('\n', ' ').Split('$');
+			if (string.IsNullOrWhiteSpace(MainTextEditor.Text)) return;
+			string[]? varlist = MainTextEditor.Text.Replace('\r',' ').Replace('\n', ' ').Split('$');
 			if (varlist == null) return;
 			if (Vars != null) Vars.Clear();
 			else Vars = new Dictionary<string, double>();
@@ -262,20 +291,37 @@ namespace PowerNote
 			if (result == true)
 			{
 				FilePath = openFileDlg.FileName;
-				Txt = File.ReadAllText(FilePath);
+				MainTextEditor.Text = File.ReadAllText(FilePath);
 			}
 		}
 
 		private void SaveButton_Click(object sender, RoutedEventArgs e)
 		{
-			File.WriteAllText(FilePath, Txt);
+			File.WriteAllText(FilePath, MainTextEditor.Text);
 		}
 
 		private void NewButton_Click(object sender, RoutedEventArgs e)
 		{
 			FilePath = "";
-			Txt = "";
+			MainTextEditor.Text = "";
 		}
 
+		private void MainTextEditor_TextChanged(object sender, EventArgs e)
+		{
+			
+			if (NoteProject.Type == ProjectType.Text)
+				NoteProject.Content = MainTextEditor.Text;
+			else
+			{
+				
+
+			}
+			indexToSave++;
+			if (indexToSave > 6)
+			{
+				indexToSave = 0;
+				App.HomeConfig.Serialize();
+			}
+		}
 	}
 }

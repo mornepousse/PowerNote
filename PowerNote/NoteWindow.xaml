@@ -1,10 +1,12 @@
 ﻿<Window
-    x:Class="PowerNote.MainWindow"
+    x:Class="PowerNote.NoteWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:PowerNote"
+    Style="{StaticResource MaterialDesignWindow}"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     x:Name="Main"
     Title="{Binding ElementName=Main, Path=TitleProject, UpdateSourceTrigger=PropertyChanged}"
@@ -50,16 +52,20 @@
             </StackPanel>
             <ToggleButton
                 Grid.Column="1"
-                Content="Topmost"
-                IsChecked="{Binding ElementName=Main, Path=Topmost, UpdateSourceTrigger=PropertyChanged}" />
+                Style="{StaticResource MaterialDesignActionAccentToggleButton}"
+                IsChecked="{Binding ElementName=Main, Path=Topmost, UpdateSourceTrigger=PropertyChanged}" >
+                <materialDesign:PackIcon Kind="ArrangeBringToFront"  />
+            </ToggleButton>
         </Grid>
         <avalonEdit:TextEditor
-            x:Name="MainTextBox"
+            x:Name="MainTextEditor"
             Grid.Row="1"
             FontFamily="Consolas"
             FontSize="10pt"
+            Background="Transparent"
             HorizontalScrollBarVisibility="Auto"
             SyntaxHighlighting="C#"
+            TextChanged="MainTextEditor_TextChanged"
             VerticalScrollBarVisibility="Auto" />
 
 

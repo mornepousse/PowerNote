@@ -7,7 +7,18 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
-    <Page Update="MainWindow.xaml">
+    <Compile Update="HomeWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="HomeWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="NoteWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\NotifyIconResources.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
