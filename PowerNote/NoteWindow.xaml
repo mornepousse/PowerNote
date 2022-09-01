@@ -5,69 +5,389 @@
     xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:PowerNote"
-    Style="{StaticResource MaterialDesignWindow}"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     x:Name="Main"
     Title="{Binding ElementName=Main, Path=TitleProject, UpdateSourceTrigger=PropertyChanged}"
     Width="800"
     Height="450"
+    AllowsTransparency="True"
     Icon="/Resources/icon256.png"
     PreviewKeyUp="Main_PreviewKeyUp"
+    PreviewMouseMove="Window_OnPreviewMouseMove"
     ResizeMode="CanResizeWithGrip"
+    SizeChanged="Window_OnSizeChanged"
+    Loaded="Main_Loaded"
+    SourceInitialized="Window_OnSourceInitialized"
+    Style="{StaticResource MaterialDesignWindow}"
+    WindowStyle="None"
+    Background="#22272e"
     mc:Ignorable="d">
-    <Grid>
+    <Window.Resources>
+        <Style x:Key="TransparentButton" TargetType="Button">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+        </Style>
+    </Window.Resources>
+    <Grid x:Name="MainGrid">
+
         <Grid.RowDefinitions>
-            <RowDefinition Height="auto" />
+            <RowDefinition Height="24" />
             <RowDefinition />
         </Grid.RowDefinitions>
-        <Grid Margin="5">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition Width="auto" />
-            </Grid.ColumnDefinitions>
-            <StackPanel Orientation="Horizontal">
-                <Button
-                    x:Name="OpenButton"
-                    Margin="2,0"
-                    Click="OpenButton_Click"
-                    Content="Open" />
-                <Button
-                    x:Name="SaveButton"
-                    Margin="2,0"
-                    Click="SaveButton_Click"
-                    Content="Save" />
-                <Button
-                    x:Name="NewButton"
-                    Margin="2,0"
-                    Click="NewButton_Click"
-                    Content="New" />
-                <Button
-                    x:Name="RecalcAllButton"
-                    Click="RecalcAllButton_Click"
-                    Content="Recalcul All" />
-                <TextBlock Margin="10,0" Text="($ for vars)" />
-                <TextBlock Margin="10,0" Text="F1: calcul" />
-                <TextBlock Margin="10,0" Text="F2: Recalcul All" />
-            </StackPanel>
-            <ToggleButton
-                Grid.Column="1"
-                Style="{StaticResource MaterialDesignActionAccentToggleButton}"
-                IsChecked="{Binding ElementName=Main, Path=Topmost, UpdateSourceTrigger=PropertyChanged}" >
-                <materialDesign:PackIcon Kind="ArrangeBringToFront"  />
-            </ToggleButton>
-        </Grid>
-        <avalonEdit:TextEditor
-            x:Name="MainTextEditor"
+        <Border
             Grid.Row="1"
-            FontFamily="Consolas"
-            FontSize="10pt"
-            Background="Transparent"
-            HorizontalScrollBarVisibility="Auto"
-            SyntaxHighlighting="C#"
-            TextChanged="MainTextEditor_TextChanged"
-            VerticalScrollBarVisibility="Auto" />
+            BorderBrush="#e6b905"
+            BorderThickness="1">
+            <Grid Grid.Row="1" Margin="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+                <avalonEdit:TextEditor
+                    x:Name="MainTextEditor"
+                    Background="Transparent"
+                    FontFamily="SansSerif"
+                    FontSize="12pt"
+                    Foreground="White"
+                    HorizontalScrollBarVisibility="Auto"
+                    SyntaxHighlighting="PHP"
+                    TextChanged="MainTextEditor_TextChanged"
+                    VerticalScrollBarVisibility="Auto" />
 
+                <Grid
+                    Grid.Column="1"
+                    Focusable="False"
+                    Visibility="Collapsed">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+                    <Button Margin="2" Content="7" />
+                    <Button
+                        Grid.Column="1"
+                        Margin="2"
+                        Content="8" />
+                    <Button
+                        Grid.Column="2"
+                        Margin="2"
+                        Content="9" />
+                    <Button
+                        Grid.Column="3"
+                        Margin="2"
+                        Content="/" />
+                    <Button
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        Margin="2"
+                        Content="4" />
+                    <Button
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        Margin="2"
+                        Content="5" />
+                    <Button
+                        Grid.Row="1"
+                        Grid.Column="2"
+                        Margin="2"
+                        Content="6" />
+                    <Button
+                        Grid.Row="1"
+                        Grid.Column="3"
+                        Margin="2"
+                        Content="*" />
+                    <Button
+                        Grid.Row="2"
+                        Grid.Column="0"
+                        Margin="2"
+                        Content="1" />
+                    <Button
+                        Grid.Row="2"
+                        Grid.Column="1"
+                        Margin="2"
+                        Content="2" />
+                    <Button
+                        Grid.Row="2"
+                        Grid.Column="2"
+                        Margin="2"
+                        Content="3" />
+                    <Button
+                        Grid.Row="2"
+                        Grid.Column="3"
+                        Margin="2"
+                        Content="+" />
+
+                    <Button
+                        Grid.Row="3"
+                        Grid.Column="0"
+                        Margin="2"
+                        Content="." />
+                    <Button
+                        Grid.Row="3"
+                        Grid.Column="1"
+                        Margin="2"
+                        Content="0" />
+                    <Button
+                        Grid.Row="3"
+                        Grid.Column="2"
+                        Margin="2"
+                        Content="," />
+
+                </Grid>
+
+            </Grid>
+        </Border>
+
+
+        <!--  Window resize behaviour  -->
+        <Rectangle
+            x:Name="WindowResizeTop"
+            Grid.Row="0"
+            Height="5"
+            Margin="5,0,5,0"
+            VerticalAlignment="Top"
+            Fill="Transparent"
+            MouseMove="WindowResize_OnMouseMove"
+            PreviewMouseDown="WindowResize_OnPreviewMouseDown"
+            Stroke="{x:Null}" />
+
+        <Rectangle
+            x:Name="WindowResizeBottom"
+            Grid.Row="1"
+            Height="5"
+            Margin="5,0,5,0"
+            VerticalAlignment="Bottom"
+            Fill="Transparent"
+            MouseMove="WindowResize_OnMouseMove"
+            PreviewMouseDown="WindowResize_OnPreviewMouseDown"
+            Stroke="{x:Null}" />
+
+        <Rectangle
+            x:Name="WindowResizeLeft"
+            Grid.Row="0"
+            Grid.RowSpan="2"
+            Width="5"
+            Margin="0,5,0,5"
+            HorizontalAlignment="Left"
+            Fill="Transparent"
+            MouseMove="WindowResize_OnMouseMove"
+            PreviewMouseDown="WindowResize_OnPreviewMouseDown"
+            Stroke="{x:Null}" />
+
+        <Rectangle
+            x:Name="WindowResizeRight"
+            Grid.Row="0"
+            Grid.RowSpan="2"
+            Width="5"
+            Margin="0,5,0,5"
+            HorizontalAlignment="Right"
+            Fill="Transparent"
+            MouseMove="WindowResize_OnMouseMove"
+            PreviewMouseDown="WindowResize_OnPreviewMouseDown"
+            Stroke="{x:Null}" />
+
+        <Rectangle
+            x:Name="WindowResizeTopLeft"
+            Grid.Row="0"
+            Width="5"
+            Height="5"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            Fill="Transparent"
+            MouseMove="WindowResize_OnMouseMove"
+            PreviewMouseDown="WindowResize_OnPreviewMouseDown"
+            Stroke="{x:Null}" />
+
+        <Rectangle
+            x:Name="WindowResizeTopRight"
+            Grid.Row="0"
+            Width="5"
+            Height="5"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top"
+            Fill="Transparent"
+            MouseMove="WindowResize_OnMouseMove"
+            PreviewMouseDown="WindowResize_OnPreviewMouseDown"
+            Stroke="{x:Null}" />
+
+        <Rectangle
+            x:Name="WindowResizeBottomLeft"
+            Grid.Row="1"
+            Width="5"
+            Height="5"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Bottom"
+            Fill="Transparent"
+            MouseMove="WindowResize_OnMouseMove"
+            PreviewMouseDown="WindowResize_OnPreviewMouseDown"
+            Stroke="{x:Null}" />
+
+        <Rectangle
+            x:Name="WindowResizeBottomRight"
+            Grid.Row="1"
+            Width="5"
+            Height="5"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Bottom"
+            Fill="Transparent"
+            MouseMove="WindowResize_OnMouseMove"
+            PreviewMouseDown="WindowResize_OnPreviewMouseDown"
+            Stroke="{x:Null}" />
+
+
+        <Grid Background="#e6b905">
+            <StackPanel
+                HorizontalAlignment="Left"
+                IsHitTestVisible="False"
+                Orientation="Horizontal">
+
+                <TextBlock
+                    x:Name="WindowName"
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Margin="5,0,0,0"
+                    VerticalAlignment="Center"
+                    Text="{Binding ElementName=Main, Path=TitleProject, UpdateSourceTrigger=PropertyChanged}" />
+            </StackPanel>
+            <!--  Row 0  -->
+            <Rectangle
+                Grid.Row="0"
+                Fill="Transparent"
+                PreviewMouseDown="WindowDraggableArea_OnPreviewMouseDown" />
+            <Border
+                Grid.Row="0"
+                BorderBrush="Transparent"
+                BorderThickness="0,0,0,1" />
+
+            <!--  Controls  -->
+            <StackPanel
+                Grid.Row="0"
+                Margin="0,0,10,0"
+                HorizontalAlignment="Right"
+                Orientation="Horizontal">
+                <ToggleButton
+                    Grid.Column="1"
+                    Width="20"
+                    Height="20"
+                    Foreground="White"
+                    IsChecked="{Binding ElementName=Main, Path=Topmost, UpdateSourceTrigger=PropertyChanged}"
+                    Style="{StaticResource MaterialDesignActionAccentToggleButton}">
+                    <materialDesign:PackIcon Width="15" Kind="ArrangeBringToFront" />
+                </ToggleButton>
+                <materialDesign:PopupBox
+                    Grid.Row="1"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    PlacementMode="BottomAndAlignRightEdges"
+                    ToolTipService.Placement="Bottom">
+                    <StackPanel>
+
+                        <Button
+                            x:Name="OpenButton"
+                            Margin="2,0"
+                            Click="OpenButton_Click"
+                            Content="Open" />
+                        <Button
+                            x:Name="SaveButton"
+                            Margin="2,0"
+                            Click="SaveButton_Click"
+                            Content="Save" />
+                        <Button
+                            x:Name="NewButton"
+                            Margin="2,0"
+                            Click="NewButton_Click"
+                            Content="New" />
+                        <Button
+                            x:Name="RecalcAllButton"
+                            Click="RecalcAllButton_Click"
+                            Content="Recalcul All" />
+                        <TextBlock Margin="10,0" Text="($ for vars)" />
+                        <TextBlock Margin="10,0" Text="F1: calcul" />
+                        <TextBlock Margin="10,0" Text="F2: Recalcul All" />
+                    </StackPanel>
+                </materialDesign:PopupBox>
+
+                <!--<Button
+                x:Name="ButtonMinimize"
+                Width="25"
+                Click="ButtonMinimize_OnClick"
+                Style="{StaticResource TransparentButton}">
+                <Border
+                    Width="10"
+                    Height="2"
+                    Margin="0,5,0,0"
+                    BorderBrush="White"
+                    BorderThickness="2" />
+            </Button>-->
+                <!--<Button
+                x:Name="ButtonMaximize"
+                Width="25"
+                Click="ButtonMaximize_OnClick"
+                Style="{StaticResource TransparentButton}">
+                <Border
+                    Width="10"
+                    Height="10"
+                    BorderBrush="White"
+                    BorderThickness="2" />
+            </Button>
+            <Button
+                x:Name="ButtonWindowStateNormal"
+                Width="25"
+                Click="ButtonRestoreDown_OnClick"
+                Style="{StaticResource TransparentButton}">
+                <StackPanel Orientation="Vertical">
+                    <Border
+                        Width="10"
+                        Height="10"
+                        Margin="10,5,0,0"
+                        BorderBrush="White"
+                        BorderThickness="2" />
+                    <Border
+                        Width="10"
+                        Height="10"
+                        Margin="0,-7,0,0"
+                        BorderBrush="White"
+                        BorderThickness="2" />
+                </StackPanel>
+            </Button>-->
+                <Button
+                    x:Name="ButtonClose"
+                    Width="25"
+                    Click="ButtonClose_OnClick"
+                    Style="{StaticResource TransparentButton}">
+                    <StackPanel Margin="0,2,0,0" Orientation="Horizontal">
+                        <Line
+                            Stroke="White"
+                            StrokeThickness="2"
+                            X1="0"
+                            X2="9"
+                            Y1="0"
+                            Y2="10" />
+
+                        <Line
+                            Margin="-10,0,0,0"
+                            Stroke="White"
+                            StrokeThickness="2"
+                            X1="9"
+                            X2="0"
+                            Y1="0"
+                            Y2="10" />
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+
+        </Grid>
 
     </Grid>
+
 </Window>

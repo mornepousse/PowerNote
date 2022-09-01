@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -100,7 +101,20 @@ namespace PowerNote.Managers
 			{
 				content = value;
 				OnPropertyChanged();
+				OnPropertyChanged(nameof(ShortContent));
 			}
+		}
+
+		[JsonIgnore]
+		public string ShortContent
+		{
+			get
+			{
+				return Type == ProjectType.Text
+					? content.Length > 10 ? Content.Substring(0,10) : Content
+					: content != string.Empty ? new FileInfo(content).Name : Content;
+			}
+			set=> OnPropertyChanged();
 		}
 
 		public Project()

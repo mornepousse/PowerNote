@@ -9,10 +9,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="CustomHighlighting.xshd" />
     <None Remove="Resources\icon24.png" />
     <None Remove="Resources\icon256.ico" />
     <None Remove="Resources\icon256.png" />
     <None Remove="Resources\icon512.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="CustomHighlighting.xshd" />
   </ItemGroup>
 
   <ItemGroup>
@@ -21,6 +26,7 @@
     <PackageReference Include="MaterialDesignColors" Version="2.0.6" />
     <PackageReference Include="MaterialDesignThemes" Version="4.5.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="WpfScreenHelper" Version="2.0.0" />
   </ItemGroup>
 
   <ItemGroup>

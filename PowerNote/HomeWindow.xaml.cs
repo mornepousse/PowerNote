@@ -22,7 +22,8 @@ namespace PowerNote
 	/// </summary>
 	public partial class HomeWindow : Window, INotifyPropertyChanged
 	{
-		
+
+
 		#region event
 		public event PropertyChangedEventHandler PropertyChanged;
 		protected void OnPropertyChanged([CallerMemberName] string name = "") => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
@@ -41,6 +42,11 @@ namespace PowerNote
 
 		private void Add_Click(object sender, RoutedEventArgs e)
 		{
+			New();
+		}
+
+		private void New()
+		{
 			HomeConfigManager.Projects.Add(new Project());
 			new NoteWindow(HomeConfigManager.Projects[HomeConfigManager.Projects.Count - 1]).Show();
 		}
@@ -48,7 +54,22 @@ namespace PowerNote
 		private void Open_Click(object sender, RoutedEventArgs e)
 		{
 			Button button = (Button)sender;
+
+			foreach(var w in App.GetWindows<NoteWindow>())
+			{
+				if(w.NoteProject == (Project)button.DataContext)
+				{
+					w.Activate();
+					return;
+				}
+			}
+
 			new NoteWindow((Project)button.DataContext).Show();
+		}
+
+		private void NewProjectCommand(object sender, ExecutedRoutedEventArgs e)
+		{
+			New();
 		}
 	}
 }
