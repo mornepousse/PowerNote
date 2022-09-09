@@ -9,18 +9,27 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     x:Name="Main"
     Title="{Binding ElementName=Main, Path=TitleProject, UpdateSourceTrigger=PropertyChanged}"
-    Width="800"
-    Height="450"
+    Width="{Binding ElementName=Main, Path=NoteProject.Width, UpdateSourceTrigger=PropertyChanged}"
+    Height="{Binding ElementName=Main, Path=NoteProject.Height, UpdateSourceTrigger=PropertyChanged}"
+    MinWidth="400"
+    MinHeight="200"
+    Activated="Main_Activated"
     AllowsTransparency="True"
     Background="Transparent"
+    Closed="Main_Closed"
+    Deactivated="Main_Deactivated"
+    Focusable="True"
     Icon="/Resources/icon256.png"
+    Left="{Binding ElementName=Main, Path=NoteProject.Left, UpdateSourceTrigger=PropertyChanged}"
     Loaded="Main_Loaded"
+    LocationChanged="Main_LocationChanged"
     PreviewKeyUp="Main_PreviewKeyUp"
     PreviewMouseMove="Window_OnPreviewMouseMove"
     ResizeMode="CanResize"
     SizeChanged="Window_OnSizeChanged"
     SourceInitialized="Window_OnSourceInitialized"
     Style="{StaticResource MaterialDesignWindow}"
+    Top="{Binding ElementName=Main, Path=NoteProject.Top, UpdateSourceTrigger=PropertyChanged}"
     WindowStyle="None"
     mc:Ignorable="d">
     <Window.Resources>
@@ -39,295 +48,328 @@
                 Color="Black" />
         </Border.Effect>
         <!--  Background="#22272e"  -->
-        <Grid x:Name="MainGrid">
+        <Border
+            Background="#22272e"
+            BorderBrush="{Binding ElementName=Main, Path=NoteProject.Brush, UpdateSourceTrigger=PropertyChanged}"
+            BorderThickness="1">
 
-            <Grid.RowDefinitions>
-                <RowDefinition Height="24" />
-                <RowDefinition />
-            </Grid.RowDefinitions>
-            <Border
-                Grid.Row="1"
-                Background="#22272e"
-                BorderBrush="#e6b905"
-                BorderThickness="1">
-                <Grid Grid.Row="1" Margin="2">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition />
-                        <ColumnDefinition Width="auto" />
-                    </Grid.ColumnDefinitions>
-                    <avalonEdit:TextEditor
-                        x:Name="MainTextEditor"
-                        Background="Transparent"
-                        FontFamily="SansSerif"
-                        FontSize="12pt"
-                        Foreground="White"
-                        HorizontalScrollBarVisibility="Auto"
-                        SyntaxHighlighting="PHP"
-                        TextChanged="MainTextEditor_TextChanged"
-                        VerticalScrollBarVisibility="Auto" />
+            <Grid x:Name="MainGrid">
 
-                    <Grid
-                        Grid.Column="1"
-                        Focusable="False"
-                        Visibility="Collapsed">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="35" />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Border Grid.Row="1">
+                    <Grid Grid.Row="1" Margin="2">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition />
-                            <ColumnDefinition />
-                            <ColumnDefinition />
-                            <ColumnDefinition />
+                            <ColumnDefinition Width="auto" />
                         </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="auto" />
-                            <RowDefinition Height="auto" />
-                            <RowDefinition Height="auto" />
-                            <RowDefinition Height="auto" />
-                            <RowDefinition Height="auto" />
-                        </Grid.RowDefinitions>
-                        <Button Margin="2" Content="7" />
-                        <Button
-                            Grid.Column="1"
-                            Margin="2"
-                            Content="8" />
-                        <Button
-                            Grid.Column="2"
-                            Margin="2"
-                            Content="9" />
-                        <Button
-                            Grid.Column="3"
-                            Margin="2"
-                            Content="/" />
-                        <Button
-                            Grid.Row="1"
-                            Grid.Column="0"
-                            Margin="2"
-                            Content="4" />
-                        <Button
-                            Grid.Row="1"
-                            Grid.Column="1"
-                            Margin="2"
-                            Content="5" />
-                        <Button
-                            Grid.Row="1"
-                            Grid.Column="2"
-                            Margin="2"
-                            Content="6" />
-                        <Button
-                            Grid.Row="1"
-                            Grid.Column="3"
-                            Margin="2"
-                            Content="*" />
-                        <Button
-                            Grid.Row="2"
-                            Grid.Column="0"
-                            Margin="2"
-                            Content="1" />
-                        <Button
-                            Grid.Row="2"
-                            Grid.Column="1"
-                            Margin="2"
-                            Content="2" />
-                        <Button
-                            Grid.Row="2"
-                            Grid.Column="2"
-                            Margin="2"
-                            Content="3" />
-                        <Button
-                            Grid.Row="2"
-                            Grid.Column="3"
-                            Margin="2"
-                            Content="+" />
 
-                        <Button
-                            Grid.Row="3"
-                            Grid.Column="0"
-                            Margin="2"
-                            Content="." />
-                        <Button
-                            Grid.Row="3"
+                        <avalonEdit:TextEditor
+                            x:Name="MainTextEditor"
+                            Background="Transparent"
+                            FontFamily="SansSerif"
+                            FontSize="12pt"
+                            Foreground="White"
+                            SyntaxHighlighting="PHP"
+                            TextChanged="MainTextEditor_TextChanged"
+                            VerticalScrollBarVisibility="Auto" />
+
+                        <Grid
                             Grid.Column="1"
-                            Margin="2"
-                            Content="0" />
-                        <Button
-                            Grid.Row="3"
-                            Grid.Column="2"
-                            Margin="2"
-                            Content="," />
+                            Focusable="False"
+                            Visibility="Collapsed">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                            </Grid.RowDefinitions>
+                            <Button Margin="2" Content="7" />
+                            <Button
+                                Grid.Column="1"
+                                Margin="2"
+                                Content="8" />
+                            <Button
+                                Grid.Column="2"
+                                Margin="2"
+                                Content="9" />
+                            <Button
+                                Grid.Column="3"
+                                Margin="2"
+                                Content="/" />
+                            <Button
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                Margin="2"
+                                Content="4" />
+                            <Button
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                Margin="2"
+                                Content="5" />
+                            <Button
+                                Grid.Row="1"
+                                Grid.Column="2"
+                                Margin="2"
+                                Content="6" />
+                            <Button
+                                Grid.Row="1"
+                                Grid.Column="3"
+                                Margin="2"
+                                Content="*" />
+                            <Button
+                                Grid.Row="2"
+                                Grid.Column="0"
+                                Margin="2"
+                                Content="1" />
+                            <Button
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                Margin="2"
+                                Content="2" />
+                            <Button
+                                Grid.Row="2"
+                                Grid.Column="2"
+                                Margin="2"
+                                Content="3" />
+                            <Button
+                                Grid.Row="2"
+                                Grid.Column="3"
+                                Margin="2"
+                                Content="+" />
+
+                            <Button
+                                Grid.Row="3"
+                                Grid.Column="0"
+                                Margin="2"
+                                Content="." />
+                            <Button
+                                Grid.Row="3"
+                                Grid.Column="1"
+                                Margin="2"
+                                Content="0" />
+                            <Button
+                                Grid.Row="3"
+                                Grid.Column="2"
+                                Margin="2"
+                                Content="," />
+
+                        </Grid>
 
                     </Grid>
 
-                </Grid>
-            </Border>
+                </Border>
 
 
-            <!--  Window resize behaviour  -->
-            <Rectangle
-                x:Name="WindowResizeTop"
-                Grid.Row="0"
-                Height="5"
-                Margin="5,0,5,0"
-                VerticalAlignment="Top"
-                Fill="Transparent"
-                MouseMove="WindowResize_OnMouseMove"
-                PreviewMouseDown="WindowResize_OnPreviewMouseDown"
-                Stroke="{x:Null}" />
-
-            <Rectangle
-                x:Name="WindowResizeBottom"
-                Grid.Row="1"
-                Height="5"
-                Margin="5,0,5,0"
-                VerticalAlignment="Bottom"
-                Fill="Transparent"
-                MouseMove="WindowResize_OnMouseMove"
-                PreviewMouseDown="WindowResize_OnPreviewMouseDown"
-                Stroke="{x:Null}" />
-
-            <Rectangle
-                x:Name="WindowResizeLeft"
-                Grid.Row="0"
-                Grid.RowSpan="2"
-                Width="5"
-                Margin="0,5,0,5"
-                HorizontalAlignment="Left"
-                Fill="Transparent"
-                MouseMove="WindowResize_OnMouseMove"
-                PreviewMouseDown="WindowResize_OnPreviewMouseDown"
-                Stroke="{x:Null}" />
-
-            <Rectangle
-                x:Name="WindowResizeRight"
-                Grid.Row="0"
-                Grid.RowSpan="2"
-                Width="5"
-                Margin="0,5,0,5"
-                HorizontalAlignment="Right"
-                Fill="Transparent"
-                MouseMove="WindowResize_OnMouseMove"
-                PreviewMouseDown="WindowResize_OnPreviewMouseDown"
-                Stroke="{x:Null}" />
-
-            <Rectangle
-                x:Name="WindowResizeTopLeft"
-                Grid.Row="0"
-                Width="5"
-                Height="5"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Top"
-                Fill="Transparent"
-                MouseMove="WindowResize_OnMouseMove"
-                PreviewMouseDown="WindowResize_OnPreviewMouseDown"
-                Stroke="{x:Null}" />
-
-            <Rectangle
-                x:Name="WindowResizeTopRight"
-                Grid.Row="0"
-                Width="5"
-                Height="5"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Top"
-                Fill="Transparent"
-                MouseMove="WindowResize_OnMouseMove"
-                PreviewMouseDown="WindowResize_OnPreviewMouseDown"
-                Stroke="{x:Null}" />
-
-            <Rectangle
-                x:Name="WindowResizeBottomLeft"
-                Grid.Row="1"
-                Width="5"
-                Height="5"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Bottom"
-                Fill="Transparent"
-                MouseMove="WindowResize_OnMouseMove"
-                PreviewMouseDown="WindowResize_OnPreviewMouseDown"
-                Stroke="{x:Null}" />
-
-            <Rectangle
-                x:Name="WindowResizeBottomRight"
-                Grid.Row="1"
-                Width="5"
-                Height="5"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Bottom"
-                Fill="Transparent"
-                MouseMove="WindowResize_OnMouseMove"
-                PreviewMouseDown="WindowResize_OnPreviewMouseDown"
-                Stroke="{x:Null}" />
-
-
-            <Grid Background="#e6b905">
-                <StackPanel
-                    HorizontalAlignment="Left"
-                    IsHitTestVisible="False"
-                    Orientation="Horizontal">
-
-                    <TextBlock
-                        x:Name="WindowName"
-                        Grid.Row="0"
-                        Grid.Column="1"
-                        Margin="5,0,0,0"
-                        VerticalAlignment="Center"
-                        Text="{Binding ElementName=Main, Path=TitleProject, UpdateSourceTrigger=PropertyChanged}" />
-                </StackPanel>
-                <!--  Row 0  -->
+                <!--  Window resize behaviour  -->
                 <Rectangle
+                    x:Name="WindowResizeTop"
                     Grid.Row="0"
+                    Height="5"
+                    Margin="5,0,5,0"
+                    VerticalAlignment="Top"
                     Fill="Transparent"
-                    PreviewMouseDown="WindowDraggableArea_OnPreviewMouseDown" />
-                <Border
-                    Grid.Row="0"
-                    BorderBrush="Transparent"
-                    BorderThickness="0,0,0,1" />
+                    MouseMove="WindowResize_OnMouseMove"
+                    PreviewMouseDown="WindowResize_OnPreviewMouseDown"
+                    Stroke="{x:Null}" />
 
-                <!--  Controls  -->
-                <StackPanel
+                <Rectangle
+                    x:Name="WindowResizeBottom"
+                    Grid.Row="1"
+                    Height="5"
+                    Margin="5,0,5,0"
+                    VerticalAlignment="Bottom"
+                    Fill="Transparent"
+                    MouseMove="WindowResize_OnMouseMove"
+                    PreviewMouseDown="WindowResize_OnPreviewMouseDown"
+                    Stroke="{x:Null}" />
+
+                <Rectangle
+                    x:Name="WindowResizeLeft"
                     Grid.Row="0"
-                    Margin="0,0,10,0"
+                    Grid.RowSpan="2"
+                    Width="5"
+                    Margin="0,5,0,5"
+                    HorizontalAlignment="Left"
+                    Fill="Transparent"
+                    MouseMove="WindowResize_OnMouseMove"
+                    PreviewMouseDown="WindowResize_OnPreviewMouseDown"
+                    Stroke="{x:Null}" />
+
+                <Rectangle
+                    x:Name="WindowResizeRight"
+                    Grid.Row="0"
+                    Grid.RowSpan="2"
+                    Width="5"
+                    Margin="0,5,0,5"
                     HorizontalAlignment="Right"
-                    Orientation="Horizontal">
-                    <ToggleButton
-                        Grid.Column="1"
-                        Width="20"
-                        Height="20"
-                        Foreground="White"
-                        IsChecked="{Binding ElementName=Main, Path=Topmost, UpdateSourceTrigger=PropertyChanged}"
-                        Style="{StaticResource MaterialDesignActionAccentToggleButton}">
-                        <materialDesign:PackIcon Width="15" Kind="ArrangeBringToFront" />
-                    </ToggleButton>
-                    <materialDesign:PopupBox
-                        Grid.Row="1"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        PlacementMode="BottomAndAlignRightEdges"
-                        ToolTipService.Placement="Bottom">
-                        <StackPanel>
+                    Fill="Transparent"
+                    MouseMove="WindowResize_OnMouseMove"
+                    PreviewMouseDown="WindowResize_OnPreviewMouseDown"
+                    Stroke="{x:Null}" />
 
-                            <Button
-                                x:Name="OpenButton"
-                                Margin="2,0"
-                                Click="OpenButton_Click"
-                                Content="Open" />
-                            <Button
-                                x:Name="SaveButton"
-                                Margin="2,0"
-                                Click="SaveButton_Click"
-                                Content="Save" />
-                            <Button
-                                x:Name="NewButton"
-                                Margin="2,0"
-                                Click="NewButton_Click"
-                                Content="New" />
-                            <Button
-                                x:Name="RecalcAllButton"
-                                Click="RecalcAllButton_Click"
-                                Content="Recalcul All" />
-                            <TextBlock Margin="10,0" Text="($ for vars)" />
-                            <TextBlock Margin="10,0" Text="F1: calcul" />
-                            <TextBlock Margin="10,0" Text="F2: Recalcul All" />
+                <Rectangle
+                    x:Name="WindowResizeTopLeft"
+                    Grid.Row="0"
+                    Width="5"
+                    Height="5"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Fill="Transparent"
+                    MouseMove="WindowResize_OnMouseMove"
+                    PreviewMouseDown="WindowResize_OnPreviewMouseDown"
+                    Stroke="{x:Null}" />
+
+                <Rectangle
+                    x:Name="WindowResizeTopRight"
+                    Grid.Row="0"
+                    Width="5"
+                    Height="5"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top"
+                    Fill="Transparent"
+                    MouseMove="WindowResize_OnMouseMove"
+                    PreviewMouseDown="WindowResize_OnPreviewMouseDown"
+                    Stroke="{x:Null}" />
+
+                <Rectangle
+                    x:Name="WindowResizeBottomLeft"
+                    Grid.Row="1"
+                    Width="5"
+                    Height="5"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Bottom"
+                    Fill="Transparent"
+                    MouseMove="WindowResize_OnMouseMove"
+                    PreviewMouseDown="WindowResize_OnPreviewMouseDown"
+                    Stroke="{x:Null}" />
+
+                <Rectangle
+                    x:Name="WindowResizeBottomRight"
+                    Grid.Row="1"
+                    Width="5"
+                    Height="5"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Bottom"
+                    Fill="Transparent"
+                    MouseMove="WindowResize_OnMouseMove"
+                    PreviewMouseDown="WindowResize_OnPreviewMouseDown"
+                    Stroke="{x:Null}" />
+
+
+                <Grid
+                    x:Name="HeaderGrid"
+                    Height="35"
+                    VerticalAlignment="Top"
+                    Background="{Binding ElementName=Main, Path=NoteProject.Brush, UpdateSourceTrigger=PropertyChanged}">
+                    <Grid Visibility="{Binding ElementName=Main, Path=HeaderIsVisibility, UpdateSourceTrigger=PropertyChanged}">
+                        <StackPanel
+                            HorizontalAlignment="Left"
+                            IsHitTestVisible="False"
+                            Orientation="Horizontal">
+
+                            <TextBlock
+                                x:Name="WindowName"
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                Margin="5,0,0,0"
+                                VerticalAlignment="Center"
+                                Foreground="Black"
+                                Text="{Binding ElementName=Main, Path=TitleProject, UpdateSourceTrigger=PropertyChanged}" />
                         </StackPanel>
-                    </materialDesign:PopupBox>
+                        <!--  Row 0  -->
+                        <Rectangle
+                            Grid.Row="0"
+                            Fill="Transparent"
+                            PreviewMouseDown="WindowDraggableArea_OnPreviewMouseDown" />
+                        <Border
+                            Grid.Row="0"
+                            BorderBrush="Transparent"
+                            BorderThickness="0,0,0,1">
+                            <Grid
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Visibility="{Binding ElementName=Main, Path=TitleIsVisibility, UpdateSourceTrigger=PropertyChanged}">
 
-                    <!--<Button
+                                <TextBox
+                                    x:Name="NameTextBox"
+                                    materialDesign:HintAssist.Hint="Name"
+                                    Foreground="Black"
+                                    IsReadOnly="True"
+                                    LostFocus="NameTextBox_LostFocus"
+                                    MouseDoubleClick="NameTextBox_MouseDoubleClick"
+                                    Text="{Binding ElementName=Main, Path=NoteProject.Title}" />
+
+                            </Grid>
+                        </Border>
+
+                        <!--  Controls  -->
+                        <StackPanel
+                            Grid.Row="0"
+                            Margin="0,0,10,0"
+                            HorizontalAlignment="Right"
+                            Orientation="Horizontal">
+                            <ToggleButton
+                                Grid.Column="1"
+                                Width="30"
+                                Height="30"
+                                Margin="0,0,20,0"
+                                Foreground="White"
+                                IsChecked="{Binding ElementName=Main, Path=Topmost, UpdateSourceTrigger=PropertyChanged}"
+                                Style="{StaticResource MaterialDesignActionAccentToggleButton}">
+                                <materialDesign:PackIcon Kind="ArrangeBringToFront" />
+                            </ToggleButton>
+                            <materialDesign:PopupBox
+                                Grid.Row="1"
+                                Margin="0,0,20,0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                PlacementMode="BottomAndAlignRightEdges"
+                                ToolTipService.Placement="Bottom">
+                                <StackPanel>
+
+                                    <Button
+                                        x:Name="OpenButton"
+                                        Margin="2,0"
+                                        Click="OpenButton_Click"
+                                        Content="Open"
+                                        Visibility="Collapsed" />
+                                    <Button
+                                        x:Name="SaveButton"
+                                        Margin="2,0"
+                                        Click="SaveButton_Click"
+                                        Content="Save"
+                                        Visibility="Collapsed" />
+                                    <Button
+                                        x:Name="NewButton"
+                                        Margin="2,0"
+                                        Click="NewButton_Click"
+                                        Content="New"
+                                        Visibility="Collapsed" />
+                                    <Button
+                                        x:Name="RecalcAllButton"
+                                        Click="RecalcAllButton_Click"
+                                        Content="Recalcul All"
+                                        Visibility="Collapsed" />
+                                    <TextBlock Margin="10,0" Text="($ for vars)" />
+                                    <TextBlock Margin="10,0" Text="F1: calcul" />
+                                    <TextBlock
+                                        Margin="10,0"
+                                        Text="F2: Recalcul All"
+                                        Visibility="Collapsed" />
+                                </StackPanel>
+                            </materialDesign:PopupBox>
+
+                            <!--<Button
                 x:Name="ButtonMinimize"
                 Width="25"
                 Click="ButtonMinimize_OnClick"
@@ -339,7 +381,7 @@
                     BorderBrush="White"
                     BorderThickness="2" />
             </Button>-->
-                    <!--<Button
+                            <!--<Button
                 x:Name="ButtonMaximize"
                 Width="25"
                 Click="ButtonMaximize_OnClick"
@@ -370,34 +412,37 @@
                         BorderThickness="2" />
                 </StackPanel>
             </Button>-->
-                    <Button
-                        x:Name="ButtonClose"
-                        Width="25"
-                        Click="ButtonClose_OnClick"
-                        Style="{StaticResource TransparentButton}">
-                        <StackPanel Margin="0,2,0,0" Orientation="Horizontal">
-                            <Line
-                                Stroke="White"
-                                StrokeThickness="2"
-                                X1="0"
-                                X2="9"
-                                Y1="0"
-                                Y2="10" />
+                            <Button
+                                x:Name="ButtonClose"
+                                Width="25"
+                                Click="ButtonClose_OnClick"
+                                Style="{StaticResource TransparentButton}">
+                                <StackPanel Margin="0,2,0,0" Orientation="Horizontal">
+                                    <Line
+                                        Stroke="White"
+                                        StrokeThickness="2"
+                                        X1="0"
+                                        X2="9"
+                                        Y1="0"
+                                        Y2="10" />
 
-                            <Line
-                                Margin="-10,0,0,0"
-                                Stroke="White"
-                                StrokeThickness="2"
-                                X1="9"
-                                X2="0"
-                                Y1="0"
-                                Y2="10" />
+                                    <Line
+                                        Margin="-10,0,0,0"
+                                        Stroke="White"
+                                        StrokeThickness="2"
+                                        X1="9"
+                                        X2="0"
+                                        Y1="0"
+                                        Y2="10" />
+                                </StackPanel>
+                            </Button>
                         </StackPanel>
-                    </Button>
-                </StackPanel>
+                    </Grid>
+
+
+                </Grid>
 
             </Grid>
-
-        </Grid>
+        </Border>
     </Border>
 </Window>

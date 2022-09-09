@@ -1,8 +1,10 @@
 ﻿<?xml version="1.0"?>
 <SyntaxDefinition name="Custom Highlighting" xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
-	<Color name="Comment" foreground="Green" />
-	<Color name="String" foreground="Blue" />
-	<Color name="variables" foreground="Orange" />
+	<Color name="Comment" foreground="#3FB33F" />
+	<Color name="String" foreground="#6262FF" />
+	<Color name="variables" foreground="#FFB939" />
+	<Color name="min" foreground="#9A98FF" />
+	<Color name="max" foreground="#FF6A73" />
 	
 	<!-- This is the main ruleset. -->
 	<RuleSet>
@@ -27,6 +29,42 @@
 			</RuleSet>
 		</Span>
 
+		<Span color="min">
+			<Begin>i:</Begin>
+			<End>:</End>
+			<RuleSet>
+				<!-- nested span for escape sequences -->
+				<Span begin="\\" end="." />
+			</RuleSet>
+		</Span>
+
+		<Span color="min">
+			<Begin>I:</Begin>
+			<End>:</End>
+			<RuleSet>
+				<!-- nested span for escape sequences -->
+				<Span begin="\\" end="." />
+			</RuleSet>
+		</Span>
+
+		<Span color="max">
+			<Begin>a:</Begin>
+			<End>:</End>
+			<RuleSet>
+				<!-- nested span for escape sequences -->
+				<Span begin="\\" end="." />
+			</RuleSet>
+		</Span>
+
+		<Span color="max">
+			<Begin>A:</Begin>
+			<End>:</End>
+			<RuleSet>
+				<!-- nested span for escape sequences -->
+				<Span begin="\\" end="." />
+			</RuleSet>
+		</Span>
+		
 		<!--<Keywords fontWeight="bold" foreground="Blue">
 			<Word>if</Word>
 			<Word>else</Word>

@@ -11,12 +11,13 @@
     Width="800"
     Height="450"
     Background="{DynamicResource SystemControlPageBackgroundChromeMediumLowBrush}"
+    Closed="Main_Closed"
     Icon="/Resources/icon256.png"
     ResizeMode="CanResizeWithGrip"
     Style="{StaticResource MaterialDesignWindow}"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
-    
+
     <Window.Resources>
         <ResourceDictionary>
             <RoutedUICommand x:Key="NewProject" Text="New Project" />
@@ -32,44 +33,150 @@
         <CommandBinding Command="{StaticResource NewProject}" Executed="NewProjectCommand" />
     </Window.CommandBindings>
 
-    <Grid  >
+    <Grid Background="#212121">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <ListBox Background="Transparent" ItemsSource="{Binding ElementName=Main, Path=HomeConfigManager.Projects, UpdateSourceTrigger=PropertyChanged}">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <Grid MaxHeight="40">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition />
-                            <ColumnDefinition Width="auto" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock
-                            Margin="10"
-                            VerticalAlignment="Center"
-                            Text="{Binding ShortContent}" />
-                        <Button
-                            Grid.Column="1"
-                            Click="Open_Click"
-                            Content="Open" />
-                    </Grid>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
-        <Button
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+
+
+            <ListBox
+                HorizontalContentAlignment="Stretch"
+                Background="Transparent" MouseDoubleClick="ListBox_MouseDoubleClick"
+                ItemsSource="{Binding ElementName=Main, Path=HomeConfigManager.Projects, UpdateSourceTrigger=PropertyChanged}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Border
+                            Margin="0"
+                            Background="#535353"
+                            BorderBrush="{Binding Brush,UpdateSourceTrigger=PropertyChanged}"
+                            BorderThickness="1,1,1,1">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="auto" />
+                                </Grid.ColumnDefinitions>
+                                <Grid Background="{Binding Brush,UpdateSourceTrigger=PropertyChanged}">
+                                    <TextBlock
+                                        Margin="2"
+                                        Foreground="Black"
+                                        Text="{Binding Title}" />
+                                </Grid>
+                                <Grid Grid.Row="1">
+                                    <TextBlock
+                                        Margin="10"
+                                        VerticalAlignment="Center"
+                                        Text="{Binding ShortContent}" />
+
+                                    <materialDesign:PopupBox
+                                        Grid.Row="1"
+                                        Margin="0,10,0,10"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Top"
+                                        PlacementMode="BottomAndAlignRightEdges"
+                                        ToolTipService.Placement="Bottom">
+                                        <StackPanel>
+
+                                            <Button
+                                                Grid.Column="1"
+                                                HorizontalAlignment="Center"
+                                                Click="Open_Click"
+                                                Content="Open" />
+                                            <Button
+                                                Grid.Column="1"
+                                                HorizontalAlignment="Center"
+                                                Click="Remove_Click"
+                                                Content="Remove" />
+
+                                            <Grid Margin="5">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition />
+                                                    <ColumnDefinition />
+                                                    <ColumnDefinition />
+                                                    <ColumnDefinition />
+                                                    <ColumnDefinition />
+                                                    <ColumnDefinition />
+                                                </Grid.ColumnDefinitions>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="auto" />
+                                                    <RowDefinition />
+                                                </Grid.RowDefinitions>
+                                                <TextBlock Grid.ColumnSpan="6" Text="Colors :" />
+
+                                                <Button
+                                                    Grid.Row="1"
+                                                    Background="#e6b905"
+                                                    Style="{StaticResource MaterialDesignFlatButton}" Click="ChangeColor_Click" />
+                                                <Button
+                                                    Grid.Row="1"
+                                                    Grid.Column="1"
+                                                    Background="#6fd262"
+                                                    Style="{StaticResource MaterialDesignFlatButton}" Click="ChangeColor_Click"/>
+                                                <Button
+                                                    Grid.Row="1"
+                                                    Grid.Column="2"
+                                                    Background="#ea86c2"
+                                                    Style="{StaticResource MaterialDesignFlatButton}" Click="ChangeColor_Click"/>
+                                                <Button
+                                                    Grid.Row="1"
+                                                    Grid.Column="3"
+                                                    Background="#c78eff"
+                                                    Style="{StaticResource MaterialDesignFlatButton}" Click="ChangeColor_Click"/>
+                                                <Button
+                                                    Grid.Row="1"
+                                                    Grid.Column="4"
+                                                    Background="#5ac0e7"
+                                                    Style="{StaticResource MaterialDesignFlatButton}" Click="ChangeColor_Click"/>
+                                                <Button
+                                                    Grid.Row="1"
+                                                    Grid.Column="5"
+                                                    Background="#aaaaaa"
+                                                    Style="{StaticResource MaterialDesignFlatButton}" Click="ChangeColor_Click"/>
+
+                                            </Grid>
+
+                                        </StackPanel>
+                                    </materialDesign:PopupBox>
+                                </Grid>
+
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </ScrollViewer>
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button
+            Grid.Row="1"
+            Margin="5"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Bottom"
+            Click="OpenExternal_Click"
+            Style="{StaticResource MaterialDesignFloatingActionButton}">
+                <materialDesign:PackIcon
+                Width="40"
+                Height="40"
+                Kind="FileDocumentEdit" />
+            </Button>
+            <Button
+            Grid.Row="1"
             Margin="5"
             HorizontalAlignment="Right"
             VerticalAlignment="Bottom"
             Click="Add_Click"
             Style="{StaticResource MaterialDesignFloatingActionButton}">
-            <materialDesign:PackIcon
+                <materialDesign:PackIcon
                 Width="40"
                 Height="40"
                 Kind="Plus" />
+            </Button>
+        </StackPanel>
+        
 
-         
-        </Button>
-   
     </Grid>
 </Window>

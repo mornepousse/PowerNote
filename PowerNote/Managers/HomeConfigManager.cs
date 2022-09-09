@@ -58,9 +58,8 @@ namespace PowerNote.Managers
 				if(File.Exists(FullPathConfig))
 				{
 					var json = File.ReadAllText(FullPathConfig);
-					Projects = Newtonsoft.Json.JsonConvert.DeserializeObject<ObservableCollection<Project>>(json);
+					Projects = JsonConvert.DeserializeObject<ObservableCollection<Project>>(json);
 				}
-					
 			}
 			catch { }
 		}
@@ -69,7 +68,7 @@ namespace PowerNote.Managers
 		{
 			try
 			{
-				string content = Newtonsoft.Json.JsonConvert.SerializeObject(Projects);
+				string content = JsonConvert.SerializeObject(Projects);
 				File.WriteAllText(FullPathConfig, content);
 			}
 			catch { }
@@ -77,67 +76,6 @@ namespace PowerNote.Managers
 
 	}
 
-	public class Project : INotifyPropertyChanged
-	{
-		#region event
-		public event PropertyChangedEventHandler PropertyChanged;
-		protected void OnPropertyChanged([CallerMemberName] string name = "") => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-		#endregion event
-
-		private ProjectType type = ProjectType.Text;
-		private string content = string.Empty;
-
-		public ProjectType Type
-		{
-			get => type; set
-			{
-				type = value;
-				OnPropertyChanged();
-			}
-		}
-		public string Content
-		{
-			get => content; set
-			{
-				content = value;
-				OnPropertyChanged();
-				OnPropertyChanged(nameof(ShortContent));
-			}
-		}
-
-		[JsonIgnore]
-		public string ShortContent
-		{
-			get
-			{
-				return Type == ProjectType.Text
-					? content.Length > 10 ? Content.Substring(0,10) : Content
-					: content != string.Empty ? new FileInfo(content).Name : Content;
-			}
-			set=> OnPropertyChanged();
-		}
-
-		public Project()
-		{
-		}
-
-		public Project(string content)
-		{
-			Content = content;
-		}
-
-		public Project(ProjectType type, string content)
-		{
-			Type = type;
-			Content = content;
-		}
-	}
-
-
-	public enum ProjectType
-	{
-		Text,
-		File
-	}
+	
 
 }

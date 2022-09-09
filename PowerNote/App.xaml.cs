@@ -27,9 +27,18 @@ namespace PowerNote
 			HomeConfig = new HomeConfigManager();
 			base.OnStartup(e);
 
-			Application.Current.Resources.SetTheme(Theme.Create(Theme.Dark, (Color)ColorConverter.ConvertFromString("#FF0098FF"), (Color)ColorConverter.ConvertFromString("#FF007ACC")));
+			Application.Current.Resources.SetTheme(Theme.Create(Theme.Dark, (Color)ColorConverter.ConvertFromString("#FFFFE400"), (Color)ColorConverter.ConvertFromString("#FFE96800")));
 
 			notifyIcon = (TaskbarIcon)FindResource("NotifyIcon");
+
+			foreach(Project pro in HomeConfig.Projects)
+			{
+				if(pro.IsOpen)
+				{
+					new NoteWindow(pro).Show();
+				}
+			}
+
 		}
 
 		protected override void OnExit(ExitEventArgs e)

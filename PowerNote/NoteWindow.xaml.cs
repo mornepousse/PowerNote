@@ -39,26 +39,13 @@ namespace PowerNote
 
 		#region Variables
 
-		//private string filePath = string.Empty;
-		private char[] spacerChars = new char[] { ' ', '\r', '\n', '\a', '\f', '\t', '\v' };
-		private Dictionary<string, double> vars = new Dictionary<string, double>();
 		private Project noteProject;
 		private int indexToSave = 0;
 		private HwndSource _hwndSource;
-
+		private Visibility headerIsVisibility = Visibility.Visible;
 		#endregion Variables
 
 		#region Properties
-
-
-		public Dictionary<string, double> Vars
-		{
-			get => vars; set
-			{
-				vars = value;
-				OnPropertyChanged();
-			}
-		}
 
 		public string FilePath
 		{
@@ -87,6 +74,21 @@ namespace PowerNote
 			}
 		}
 
+		public Visibility HeaderIsVisibility
+		{
+			get => headerIsVisibility; set
+			{
+				headerIsVisibility = value;
+				OnPropertyChanged();
+			}
+		}
+		public Visibility TitleIsVisibility
+		{
+			get => NoteProject.Type == ProjectType.File ? Visibility.Collapsed: Visibility.Visible; set
+			{
+				OnPropertyChanged();
+			}
+		}
 
 		#endregion Properties
 		IHighlightingDefinition customHighlighting;
@@ -107,8 +109,6 @@ namespace PowerNote
 			}
 			// and register it in the HighlightingManager
 			HighlightingManager.Instance.RegisterHighlighting("Custom Highlighting", new string[] { ".cool" }, customHighlighting);
-
-			
 
 			//ButtonWindowStateNormal.Visibility = Visibility.Collapsed;
 
@@ -134,178 +134,81 @@ namespace PowerNote
 		{
 			if (e.Key == Key.F1)
 			{
-				GetVars();
+				NoteProject.GetVars(MainTextEditor.Text);
 
 				int cursorPosition = MainTextEditor.SelectionStart;
 				int selectionLength = MainTextEditor.SelectionLength;
 				if (cursorPosition == -1 || string.IsNullOrWhiteSpace(MainTextEditor.Text))
 					return;
 
+				string textTmp = NoteProject.GetCalcul(MainTextEditor.Text, cursorPosition);
+				string calcul = "";
+				bool isMin = false;
+				bool isMax = false;
+				double min = 0;
+				double max = 0;
+				if (textTmp.Contains(':'))
+				{
+					try
+					{
+						var items = textTmp.Split(':');
+
+						if (items.Length >= 2)
+						{
+							calcul = items[items.Length - 1];
+
+							foreach (var item in items)
+							{
+								if (item.ToLower()[0] == 'i')
+								{
+									min = Convert.ToInt32(item.Substring(1));
+									isMin = true;
+								}
+								if (item.ToLower()[0] == 'a')
+								{
+									max = Convert.ToInt32(item.Substring(1));
+									isMax = true;
+								}
+							}
+
+						}
+					}
+					catch { }
+
+				}
+				else calcul = textTmp;
+
+				if (string.IsNullOrWhiteSpace(calcul)) return;
+
+				calcul = calcul.Replace("=",string.Empty);
+
+				List<string> varListTmp = NoteProject.GetVarsByLengthOrder();
+
+				List<string> cals = new List<string>();
+
+				cals = NoteProject.ReplaceVars(varListTmp, calcul);
 				
-
-				string textTmp = GetCalcul(MainTextEditor.Text, cursorPosition);
-
-				if (string.IsNullOrWhiteSpace(textTmp)) return;
-
-				List<string> varListTmp = GetVarsByLengthOrder();
-
-				textTmp = ReplaceVars(varListTmp, textTmp);
 				try
 				{
-					object? result = new DataTable().Compute(textTmp.Replace(',', '.'), null);
-
-					MainTextEditor.Text = MainTextEditor.Text.Insert(cursorPosition, "=" + result);
+					string result;
+					result = NoteProject.GetRTextesult( cals, isMin, isMax, min, max);
+					int pos = MainTextEditor.SelectionStart + result.ToString().Length;
+					MainTextEditor.Text = MainTextEditor.Text.Insert(cursorPosition, result.ToString());
+					MainTextEditor.SelectionStart = pos;
 				}
 				catch { }
 
 			}
 			if (e.Key == Key.F2)
 			{
-				ReCalculAll();
-			}
-		}
-
-		private void ReCalculAll()
-		{
-			bool isResult = false;
-			bool isVar = false;
-			List<int> vsStart = new List<int>();
-			List<int> vslength = new List<int>();
-			for (int i = 0; i < MainTextEditor.Text.Length; i++)
-			{
-				char c = MainTextEditor.Text[i];
-
-				if (c == '$' && !isVar)
-					isVar = true;
-				if (isVar && spacerChars.Contains(c))
-					isVar = false;
-
-				if (isResult && !spacerChars.Contains(c))
-				{
-					vslength[vslength.Count - 1]++;
-				}
-				else isResult = false;
-
-				if (c == '=' && !isVar)
-				{
-					isResult = true;
-					vsStart.Add(i);
-					vslength.Add(1);
-				}
-			}
-
-			int rmLength = 0; // diff length old to new
-			string tmpTxt = MainTextEditor.Text;
-			for (int i = 0; i < vsStart.Count; i++)
-			{
-				int s = vsStart[i];
-				int l = vslength[i];
-				string suf = "";
-				string result = "";
-				string pref = tmpTxt.Substring(0, s - rmLength);
-
-				int sufStart = s + l - rmLength;
-				int sufEnd = (tmpTxt.Length - 1) - (s + l - rmLength);
-				if (sufEnd > 0)
-					suf = tmpTxt.Substring(sufStart, sufEnd);
-
-				// get calcul and get result
-
-				string calcul = GetCalcul(pref);
-
-				calcul = ReplaceVars(GetVarsByLengthOrder(), calcul);
-
-				try
-				{
-					result = "=" + (new DataTable().Compute(calcul.Replace(',', '.'), null)).ToString();
-				}
-				catch { }
-
-				tmpTxt = pref + result + suf;
-				rmLength = (l - result.Length) >= 0 ? (l - result.Length) : (result.Length - l);
-			}
-			MainTextEditor.Text = tmpTxt;
-		}
-
-		private string ReplaceVars(List<string> varListTmp, string textTmp)
-		{
-			foreach (string var in varListTmp)
-			{
-				if (textTmp.Contains(var))
-				{
-					textTmp = textTmp.Replace(var, Vars[var].ToString());
-				}
-			}
-
-			return textTmp;
-		}
-
-		private string GetCalcul(string text)
-		{
-			return GetCalcul(text, text.Length);
-		}
-		private string GetCalcul(string text, int cursorPosition)
-		{
-			string textTmp = "";
-			for (int i = cursorPosition; i > 0; i--)
-			{
-				char c = text[i - 1];
-				if (c == ' ' || c == '\r' || c == '\n')
-					break;
-				else textTmp = c + textTmp;
-			}
-
-			return textTmp;
-		}
-
-		private List<string> GetVarsByLengthOrder()
-		{
-			if (Vars == null || Vars.Count == 0) 
-				return new List<string>();
-
-			List<string> varListTmp = new List<string>();
-			foreach (KeyValuePair<string, double> item in vars)
-			{
-				varListTmp.Add(item.Key.ToString());
-			}
-			varListTmp = varListTmp.OrderBy(v => v.Length).ToList();
-			return varListTmp;
-		}
-
-		private void GetVars()
-		{
-			if (string.IsNullOrWhiteSpace(MainTextEditor.Text)) return;
-			string[]? varlist = MainTextEditor.Text.Replace('\r',' ').Replace('\n', ' ').Split('$');
-			if (varlist == null) return;
-			if (Vars != null) Vars.Clear();
-			else Vars = new Dictionary<string, double>();
-
-			foreach (string? v in varlist)
-			{
-				if(!string.IsNullOrWhiteSpace(v))
-				{
-					string[]? valList = v.Split('=');
-					if (valList != null && valList.Length == 2 && !valList[0].Contains(' '))
-					{
-						string? varName = valList[0];
-						string[]? valtmp = valList[1].Split(' ');
-						if (varName != null && valtmp != null && varName.Length >= 1)
-						{
-							try
-							{
-								double val = Convert.ToDouble(valtmp[0].Replace('.',','));
-								vars.Add(varName, val);
-							}
-							catch { }
-						}
-					}
-				}
+				NoteProject.GetVars(MainTextEditor.Text);
+				MainTextEditor.Text = NoteProject.ReCalculAll(MainTextEditor.Text);
 			}
 		}
 
 		private void RecalcAllButton_Click(object sender, RoutedEventArgs e)
 		{
-			ReCalculAll();
+			MainTextEditor.Text = NoteProject.ReCalculAll(MainTextEditor.Text);
 		}
 
 		private void OpenButton_Click(object sender, RoutedEventArgs e)
@@ -335,14 +238,13 @@ namespace PowerNote
 
 		private void MainTextEditor_TextChanged(object sender, EventArgs e)
 		{
-			
+
 			if (NoteProject.Type == ProjectType.Text)
 				NoteProject.Content = MainTextEditor.Text;
-			else
-			{
-				
+			else File.WriteAllText(NoteProject.Content, MainTextEditor.Text);
 
-			}
+			
+
 			indexToSave++;
 			if (indexToSave > 6)
 			{
@@ -516,6 +418,10 @@ namespace PowerNote
 				WindowStateHelper.UpdateLastKnownNormalSize(Width, Height);
 				WindowStateHelper.UpdateLastKnownLocation(Top, Left);
 			}
+
+			NoteProject.Width = Width;
+			NoteProject.Height = Height;
+
 		}
 
 		private void ShowRestoreDownButton()
@@ -532,6 +438,8 @@ namespace PowerNote
 
 		private void ButtonClose_OnClick(object sender, RoutedEventArgs e)
 		{
+			NoteProject.IsOpen = false;
+			App.HomeConfig.Serialize();
 			Close();
 		}
 
@@ -555,7 +463,45 @@ namespace PowerNote
 
 		private void Main_Loaded(object sender, RoutedEventArgs e)
 		{
+			NoteProject.IsOpen = true;
 			MainTextEditor.SyntaxHighlighting = customHighlighting;
+			App.HomeConfig.Serialize();
 		}
+
+		private void Main_LocationChanged(object sender, EventArgs e)
+		{
+			NoteProject.Left = this.Left;
+			NoteProject.Top = this.Top;
+
+		}
+
+		private void Main_Closed(object sender, EventArgs e)
+		{
+			App.HomeConfig.Serialize();
+		}
+
+		private void NameTextBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+		{
+			NameTextBox.IsReadOnly = NameTextBox.IsReadOnly ? false : true;
+		}
+
+		private void NameTextBox_LostFocus(object sender, RoutedEventArgs e)
+		{
+			NameTextBox.IsReadOnly = true;
+		}
+
+
+		private void Main_Deactivated(object sender, EventArgs e)
+		{
+			HeaderGrid.Height = 5;
+			HeaderIsVisibility = Visibility.Collapsed;
+		}
+
+		private void Main_Activated(object sender, EventArgs e)
+		{
+			HeaderGrid.Height = 35;
+			HeaderIsVisibility = Visibility.Visible;
+		}
+
 	}
 }
