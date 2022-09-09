@@ -142,56 +142,23 @@ namespace PowerNote
 					return;
 
 				string textTmp = NoteProject.GetCalcul(MainTextEditor.Text, cursorPosition);
-				string calcul = "";
-				bool isMin = false;
-				bool isMax = false;
-				double min = 0;
-				double max = 0;
-				if (textTmp.Contains(':'))
-				{
-					try
-					{
-						var items = textTmp.Split(':');
+				
+				PCalculs pCalculs = new PCalculs(textTmp);
 
-						if (items.Length >= 2)
-						{
-							calcul = items[items.Length - 1];
+				if (string.IsNullOrWhiteSpace(pCalculs.Calcul)) return;
 
-							foreach (var item in items)
-							{
-								if (item.ToLower()[0] == 'i')
-								{
-									min = Convert.ToInt32(item.Substring(1));
-									isMin = true;
-								}
-								if (item.ToLower()[0] == 'a')
-								{
-									max = Convert.ToInt32(item.Substring(1));
-									isMax = true;
-								}
-							}
-
-						}
-					}
-					catch { }
-
-				}
-				else calcul = textTmp;
-
-				if (string.IsNullOrWhiteSpace(calcul)) return;
-
-				calcul = calcul.Replace("=",string.Empty);
+				pCalculs.Calcul = pCalculs.Calcul.Replace("=",string.Empty);
 
 				List<string> varListTmp = NoteProject.GetVarsByLengthOrder();
 
 				List<string> cals = new List<string>();
 
-				cals = NoteProject.ReplaceVars(varListTmp, calcul);
+				cals = NoteProject.ReplaceVars(varListTmp, pCalculs.Calcul);
 				
 				try
 				{
 					string result;
-					result = NoteProject.GetRTextesult( cals, isMin, isMax, min, max);
+					result = NoteProject.GetRTextesult( cals, pCalculs.IsMin, pCalculs.IsMax, pCalculs.Min, pCalculs.Max);
 					int pos = MainTextEditor.SelectionStart + result.ToString().Length;
 					MainTextEditor.Text = MainTextEditor.Text.Insert(cursorPosition, result.ToString());
 					MainTextEditor.SelectionStart = pos;

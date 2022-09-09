@@ -524,16 +524,17 @@ namespace PowerNote.Managers
 					{
 						Calcul = items[items.Length - 1];
 
-						foreach (var item in items)
+						for (int i = 0; i < items.Length; i++)
 						{
-							if (item.ToLower()[0] == 'i' && item.ToLower()[1] == ':' )
+							string? item = items[i];
+							if (item.ToLower()[0] == 'i' && IsDoubleRealNumber(items[i+1]) )
 							{
-								Min = Convert.ToInt32(item.Substring(1));
+								Min = Convert.ToInt32(items[i + 1]);
 								IsMin = true;
 							}
-							if (item.ToLower()[0] == 'a' && item.ToLower()[1] == ':')
+							if (item.ToLower()[0] == 'a' && IsDoubleRealNumber(items[i + 1]))
 							{
-								Max = Convert.ToInt32(item.Substring(1));
+								Max = Convert.ToInt32(items[i + 1]);
 								IsMax = true;
 							}
 						}
@@ -545,7 +546,15 @@ namespace PowerNote.Managers
 			}
 			else Calcul = RawCalcule;
 		}
+		public static bool IsDoubleRealNumber(string valueToTest)
+		{
+			if (double.TryParse(valueToTest, out double d) && !Double.IsNaN(d) && !Double.IsInfinity(d))
+			{
+				return true;
+			}
 
+			return false;
+		}
 	}
 
 }
