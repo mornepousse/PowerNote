@@ -6,9 +6,11 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Navigation;
 
 namespace PowerNote
 {
@@ -19,6 +21,7 @@ namespace PowerNote
 	{
 		private TaskbarIcon notifyIcon;
 		private static HomeConfigManager homeConfig = new HomeConfigManager();
+		private CrashReporter crashReporter = new CrashReporter(System.Reflection.Assembly.GetExecutingAssembly().Location, Assembly.GetExecutingAssembly().GetName().Version.ToString());
 
 		public static HomeConfigManager HomeConfig { get => homeConfig; set => homeConfig = value; }
 
@@ -45,6 +48,10 @@ namespace PowerNote
 		{
 			notifyIcon.Dispose();
 			base.OnExit(e);
+		}
+		protected override void OnNavigationFailed(NavigationFailedEventArgs e)
+		{
+			base.OnNavigationFailed(e);
 		}
 
 
