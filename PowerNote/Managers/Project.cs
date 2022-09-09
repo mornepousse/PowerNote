@@ -337,6 +337,12 @@ namespace PowerNote.Managers
 		}
 		public List<string> ReplaceVars(List<string> varListTmp, string textsTmp)
 		{
+
+			if(varListTmp.Count == 0)
+			{
+				return new List<string>() { textsTmp };
+			}
+
 			List<string> vs = new List<string>();
 
 			foreach(string var in varListTmp)
