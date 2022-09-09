@@ -20,17 +20,18 @@ Example with the tables:
 
 $myTab=[1,2,3,4]
 
-2*myTab*10={
+2\*myTab\*10={
  
- 2*1*10=20
+ 2\*1\*10=20
  
- 2*2*10=40
+ 2\*2\*10=40
  
- 2*3*10=60
+ 2\*3\*10=60
  
- 2*4*10=80
+ 2\*4\*10=80
  }
 
+Caution, do not use spaces in the calculations.
 
 ![image](https://user-images.githubusercontent.com/48982737/189350824-f992cea1-f074-40eb-a845-1e92acf2318c.png)
 
