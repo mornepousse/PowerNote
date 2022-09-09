@@ -20,7 +20,7 @@ Example with the tables:
 
 $myTab=[1,2,3,4]
 
-2*myTab*10={
+2 * myTab*10={
  2*1*10=20
  2*2*10=40
  2*3*10=60
