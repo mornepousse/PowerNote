@@ -83,7 +83,10 @@ namespace PowerNote.Managers
 		{
 			try
 			{
-				if (mail == null)
+				if (mail == null || string.IsNullOrWhiteSpace(mail.MailAddressMaster) || 
+					string.IsNullOrWhiteSpace(mail.MailAddressMasterPassword) ||
+					string.IsNullOrWhiteSpace(mail.MailAddressSleeve) || 
+					string.IsNullOrWhiteSpace(mail.SmtpClient))
 					return;
 
 				SmtpClient mySmtpClient = new SmtpClient(mail.SmtpClient)
