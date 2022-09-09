@@ -11,6 +11,7 @@ $myTab=[1,2,3,4]
 
 it allows you to do calculations :
 2*3/10
+
 if you have the cursor at the calculation press F1 :
 2*3/10=0,6
 
