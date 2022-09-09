@@ -6,6 +6,7 @@ PowerNote supports variables.
 
 Example : 
 $myVar=10
+
 Arrays:
 $myTab=[1,2,3,4]
 
