@@ -398,6 +398,7 @@ namespace PowerNote.Managers
 				if(!isContains) vsVars.Add(cal);
 			}
 
+			if(vsVars .Count == 0) return new List<string>() { textsTmp };
 			return vsVars;
 		}
 
