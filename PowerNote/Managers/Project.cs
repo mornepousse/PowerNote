@@ -337,7 +337,6 @@ namespace PowerNote.Managers
 		}
 		public List<string> ReplaceVars(List<string> varListTmp, string textsTmp)
 		{
-
 			if(varListTmp.Count == 0)
 			{
 				return new List<string>() { textsTmp };
@@ -350,6 +349,10 @@ namespace PowerNote.Managers
 				if (textsTmp.Contains(var))
 				{
 					if (Vars[var].GetType() == typeof(double))
+					{
+						textsTmp = textsTmp.Replace(var, Vars[var].ToString());
+					}
+					else if(Vars[var].GetType() == typeof(string))
 					{
 						textsTmp = textsTmp.Replace(var, Vars[var].ToString());
 					}
@@ -456,23 +459,44 @@ namespace PowerNote.Managers
 						{
 							try
 							{
-								if (valtmp[0] == '[' && valtmp[valtmp.Length - 1] == ']')
+								bool isMathCalcul = false;
+
+								foreach(char c in new char[] { '*', '+', '/', '%', '(', ')', '-' })
 								{
-									string t = valtmp.Substring(1, valtmp.Length - 2);
-
-									List<double> doubles = new List<double>();
-
-									foreach (string? part in t.Split(','))
+									if (valtmp.Contains(c))
 									{
-										doubles.Add(Convert.ToDouble(part.Replace('.', ',')));
+										isMathCalcul = true;
+										break;
 									}
-									Vars.Add(varName, doubles);
+
+								}
+
+								if(isMathCalcul)
+								{
+									vars.Add(varName, string.Format("({0})", valtmp));
 								}
 								else
 								{
-									double val = Convert.ToDouble(valtmp.Replace('.', ','));
-									vars.Add(varName, val);
+									if (valtmp[0] == '[' && valtmp[valtmp.Length - 1] == ']')
+									{
+										string t = valtmp.Substring(1, valtmp.Length - 2);
+
+										List<double> doubles = new List<double>();
+
+										foreach (string? part in t.Split(','))
+										{
+											doubles.Add(Convert.ToDouble(part.Replace('.', ',')));
+										}
+										Vars.Add(varName, doubles);
+									}
+									else
+									{
+										double val = Convert.ToDouble(valtmp.Replace('.', ','));
+										vars.Add(varName, val);
+									}
 								}
+
+							
 
 							}
 							catch { }

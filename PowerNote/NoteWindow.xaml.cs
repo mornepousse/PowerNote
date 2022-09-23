@@ -170,6 +170,7 @@ namespace PowerNote
 			{
 				NoteProject.GetVars(MainTextEditor.Text);
 				MainTextEditor.Text = NoteProject.ReCalculAll(MainTextEditor.Text);
+				
 			}
 		}
 
